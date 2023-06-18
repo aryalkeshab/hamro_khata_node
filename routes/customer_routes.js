@@ -8,7 +8,7 @@ const {
 const express = require("express");
 const router = express.Router();
 
-router.post("/", authenticateToken, createCustomer);
-router.get("/", authenticateToken, getCustomers);
+router.post("/", createCustomer);
+router.get("/", getCustomers);
 router.delete("/:id", authenticateToken, deleteCustomers);
 module.exports = router;

@@ -37,7 +37,7 @@ model Product {
 
 model PurchaseOrder {
     id              Int             @id @default(autoincrement())
-    purchaseOrderNo String          @unique
+    purchaseOrderNo String?
     orders          PurchaseItems[]
     vendorName      Vendor          @relation(fields: [vendorId], references: [id])
     vendorId        Int
@@ -64,7 +64,7 @@ model PurchaseItems {
 
 model SalesOrder {
     id           Int          @id @default(autoincrement())
-    salesOrderNo String       @unique
+    salesOrderNo String?
     orders       SalesItems[]
     customerName Customer     @relation(fields: [customerId], references: [id])
     customerId   Int
@@ -84,6 +84,7 @@ model SalesItems {
     productId    Int
     quantity     Int
     sellingPrice Float
+    total        Float
     createdAt    DateTime   @default(now())
     updatedAt    DateTime   @updatedAt
 }
