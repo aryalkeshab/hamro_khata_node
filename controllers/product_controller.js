@@ -1,0 +1,93 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
+async function addProduct(req, res) {
+  try {
+    const { productName, description, purchasePrice, sellingPrice } = req.body;
+    const product = await prisma.product.create({
+      data: {
+        productName,
+        description,
+        purchasePrice,
+        sellingPrice,
+        quantity: 0,
+      },
+    });
+    res.json({
+      success: true,
+      message: "Product added successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
+async function getProducts(req, res) {
+  const productName = req.query.productName;
+  try {
+    if (productName) {
+      const products = await prisma.product.findMany({
+        where: {
+          productName: {
+            contains: productName,
+            // mode: "insensitive",
+          },
+        },
+      });
+      res.json(products);
+      return;
+    } else {
+      const products = await prisma.product.findMany();
+      res.json(products);
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+async function updateProduct(req, res) {
+  try {
+    const { productName, description, purchasePrice, sellingPrice, quantity } =
+      req.body;
+    const product = await prisma.product.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        productName,
+        description,
+        purchasePrice,
+        sellingPrice,
+        // quantity,
+      },
+    });
+    res.json({
+      success: true,
+      message: "Product updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
+async function deleteProduct(req, res) {
+  try {
+    const { id } = req.params;
+    await prisma.product.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    res.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+module.exports = { addProduct, getProducts, updateProduct, deleteProduct };

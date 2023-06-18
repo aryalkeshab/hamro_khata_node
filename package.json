@@ -1,0 +1,22 @@
+{
+  "name": "hamro_khata",
+  "version": "1.0.0",
+  "description": "Inventory Management System",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.15.0",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mysql": "^2.18.1",
+    "prisma": "^4.15.0",
+    "swagger-ui-express": "^4.6.3",
+    "yamljs": "^0.3.0"
+  }
+}

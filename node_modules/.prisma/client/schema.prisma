@@ -1,0 +1,137 @@
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id            Int             @id @default(autoincrement())
+    email         String          @unique
+    firstName     String?
+    lastName      String?
+    address       String?
+    password      String?
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    PurchaseOrder PurchaseOrder[]
+    SalesOrder    SalesOrder[]
+    UserRoles     UserRoles[]
+    UserTokens    UserTokens[]
+}
+
+model Product {
+    id            Int             @id @default(autoincrement())
+    productName   String          @unique
+    description   String?
+    purchasePrice Float
+    sellingPrice  Float
+    quantity      Int
+    purchaseItems PurchaseItems[]
+    salesItems    SalesItems[]
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+}
+
+model PurchaseOrder {
+    id              Int             @id @default(autoincrement())
+    purchaseOrderNo String          @unique
+    orders          PurchaseItems[]
+    vendorName      Vendor          @relation(fields: [vendorId], references: [id])
+    vendorId        Int
+    remarks         String?
+    total           Float
+    user            User            @relation(fields: [userId], references: [id])
+    userId          Int
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+}
+
+model PurchaseItems {
+    id              Int           @id @default(autoincrement())
+    purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+    purchaseOrderId Int
+    product         Product       @relation(fields: [productId], references: [id])
+    productId       Int
+    quantity        Int
+    purchasePrice   Float
+    total           Float
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+}
+
+model SalesOrder {
+    id           Int          @id @default(autoincrement())
+    salesOrderNo String       @unique
+    orders       SalesItems[]
+    customerName Customer     @relation(fields: [customerId], references: [id])
+    customerId   Int
+    User         User?        @relation(fields: [userId], references: [id])
+    userId       Int?
+    remarks      String?
+    total        Float
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+}
+
+model SalesItems {
+    id           Int        @id @default(autoincrement())
+    salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id])
+    salesOrderId Int
+    product      Product    @relation(fields: [productId], references: [id])
+    productId    Int
+    quantity     Int
+    sellingPrice Float
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+}
+
+model Vendor {
+    id            Int             @id @default(autoincrement())
+    name          String          @unique
+    address       String?
+    phone         String?
+    PurchaseOrder PurchaseOrder[]
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+}
+
+model Customer {
+    id         Int          @id @default(autoincrement())
+    name       String       @unique
+    address    String?
+    phone      String?
+    SalesOrder SalesOrder[]
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+}
+
+model Roles {
+    id        Int         @id @default(autoincrement())
+    name      String      @unique
+    UserRoles UserRoles[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+}
+
+model UserRoles {
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    Int
+    role      Roles    @relation(fields: [roleId], references: [id])
+    roleId    Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model UserTokens {
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    Int
+    expiry    DateTime
+    token     String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
