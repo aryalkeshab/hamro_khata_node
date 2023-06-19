@@ -18,7 +18,10 @@ async function createUser(req, res) {
       return;
     }
     if (existingUser) {
-      res.status(400).json({ error: "Email already exists" });
+      res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
       return;
     }
     const salt = await bcrypt.genSalt(10);
@@ -40,7 +43,10 @@ async function createUser(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({
+      succcess: false,
+      message: "Something went wrong",
+    });
   }
 }
 

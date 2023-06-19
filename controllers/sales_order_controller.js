@@ -77,11 +77,24 @@ async function createSalesOrder(req, res) {
       });
     });
     await Promise.all(updateQuantityPromises);
+    const salesOrderNumber = "PO-" + salesOrder.id;
+
+    const updateTable = await prisma.salesOrder.update({
+      where: {
+        id: salesOrder.id,
+      },
+      data: {
+        salesOrderNo: salesOrderNumber,
+      },
+      include: {
+        orders: true,
+      },
+    });
     console.log(salesOrder);
     res.json({
       success: true,
       message: "Sales Order created successfully",
-      data: salesOrder,
+      data: updateTable,
     });
   } catch (error) {
     console.error(error);

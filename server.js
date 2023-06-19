@@ -14,12 +14,12 @@ const YAML = require("yamljs");
 app.use(express.json());
 const swaggerDocument = YAML.load("./swagger_docs/swagger.yaml");
 
-// app.use("/", (req, res) => {
-//   res.send(
-//     "Hello World from Keshab Aryal, building a REST API based on Inventory Management System"
-//   );
-//   res.end();
-// });
+app.use("/home", (req, res) => {
+  res.send(
+    "Hello World from Keshab Aryal, building a REST API based on Inventory Management System"
+  );
+  res.end();
+});
 
 app.use(ErrorMiddleware);
 
@@ -30,6 +30,6 @@ app.use("/api/product", productRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/purchase", purchaseRoutes);
 app.use("/api/sales", salesRoutes);
-app.listen(2122, "192.168.1.73", () => {
-  console.log("Server running on http://192.168.1.73:2122");
+app.listen(2122, "192.168.1.72", () => {
+  console.log("Server running on http://192.168.1.72:2122");
 });

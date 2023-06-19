@@ -92,10 +92,24 @@ async function createPurchaseOrder(req, res) {
       });
     });
     await Promise.all(updateQuantityPromises);
+
+    const purchaseOrderNumber = "PO-" + purchaseOrder.id;
+
+    const updateTable = await prisma.purchaseOrder.update({
+      where: {
+        id: purchaseOrder.id,
+      },
+      data: {
+        purchaseOrderNo: purchaseOrderNumber,
+      },
+      include: {
+        orders: true,
+      },
+    });
     res.json({
       success: true,
       message: "Purchase Order created successfully",
-      data: purchaseOrder,
+      data: updateTable,
     });
   } catch (error) {
     console.error(error);
