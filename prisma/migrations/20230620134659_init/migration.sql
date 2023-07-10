@@ -8,6 +8,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `rolePermissionId` INTEGER NOT NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -31,7 +32,7 @@ CREATE TABLE `Product` (
 -- CreateTable
 CREATE TABLE `PurchaseOrder` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `purchaseOrderNo` VARCHAR(191) NOT NULL,
+    `purchaseOrderNo` VARCHAR(191) NULL,
     `vendorId` INTEGER NOT NULL,
     `remarks` VARCHAR(191) NULL,
     `total` DOUBLE NOT NULL,
@@ -39,7 +40,6 @@ CREATE TABLE `PurchaseOrder` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `PurchaseOrder_purchaseOrderNo_key`(`purchaseOrderNo`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -60,7 +60,7 @@ CREATE TABLE `PurchaseItems` (
 -- CreateTable
 CREATE TABLE `SalesOrder` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `salesOrderNo` VARCHAR(191) NOT NULL,
+    `salesOrderNo` VARCHAR(191) NULL,
     `customerId` INTEGER NOT NULL,
     `userId` INTEGER NULL,
     `remarks` VARCHAR(191) NULL,
@@ -68,7 +68,6 @@ CREATE TABLE `SalesOrder` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `SalesOrder_salesOrderNo_key`(`salesOrderNo`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -79,6 +78,7 @@ CREATE TABLE `SalesItems` (
     `productId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     `sellingPrice` DOUBLE NOT NULL,
+    `total` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -123,17 +123,6 @@ CREATE TABLE `Roles` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `UserRoles` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `userId` INTEGER NOT NULL,
-    `roleId` INTEGER NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `UserTokens` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
@@ -145,6 +134,20 @@ CREATE TABLE `UserTokens` (
     UNIQUE INDEX `UserTokens_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `userPermission` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `slug` VARCHAR(191) NOT NULL,
+    `rolesId` INTEGER NULL,
+
+    UNIQUE INDEX `userPermission_slug_key`(`slug`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `User` ADD CONSTRAINT `User_rolePermissionId_fkey` FOREIGN KEY (`rolePermissionId`) REFERENCES `Roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `PurchaseOrder` ADD CONSTRAINT `PurchaseOrder_vendorId_fkey` FOREIGN KEY (`vendorId`) REFERENCES `Vendor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -171,10 +174,7 @@ ALTER TABLE `SalesItems` ADD CONSTRAINT `SalesItems_salesOrderId_fkey` FOREIGN K
 ALTER TABLE `SalesItems` ADD CONSTRAINT `SalesItems_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `UserRoles` ADD CONSTRAINT `UserRoles_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `UserRoles` ADD CONSTRAINT `UserRoles_roleId_fkey` FOREIGN KEY (`roleId`) REFERENCES `Roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `UserTokens` ADD CONSTRAINT `UserTokens_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `userPermission` ADD CONSTRAINT `userPermission_rolesId_fkey` FOREIGN KEY (`rolesId`) REFERENCES `Roles`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

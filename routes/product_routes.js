@@ -11,9 +11,7 @@ const express = require("express");
 const router = express.Router();
 router.post("/", addProduct);
 router.get("/", getProducts);
-router.put("/:id", updateProduct);
+router.put("/:id", authenticateToken, updateProduct);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;
-
-// all methods in the routes are working fine tested with postman

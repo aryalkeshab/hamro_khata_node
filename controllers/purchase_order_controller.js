@@ -118,52 +118,33 @@ async function createPurchaseOrder(req, res) {
 }
 
 async function getPurchaseOrders(req, res) {
-  // const { id } = req.params;
-
-  // if (id) {
-  //   try {
-  //     const purchaseOrder = await prisma.purchaseOrder.findUnique({
-  //       where: { id: parseInt(id) },
-  //       include: {
-  //         orders: true,
-  //       },
-  //     });
-  //     res.json({
-  //       success: true,
-  //       data: purchaseOrder,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ error: "Something went wrong" });
-  //   }
-  //   return;
-  // } else {
+  const { purchaseOrderNo, customerName } = req.params;
   try {
-    // const purchaseOrders = await prisma.purchaseOrder.findMany({
-    //   include: {
-    //     orders: true,
-    //   },
-    // });
-    const purchaseOrders = await prisma.purchaseOrder.findMany({
-      // select: {
-      //   id: true,
-      //   remarks: true,
-      //   total: true,
-      //   userId: true,
-      // },
-      include: {
-        orders: true,
+    const customer = await prisma.customer.findone({
+      where: {
+        customerName: customerName,
       },
     });
-    res.json({
-      success: true,
-      data: purchaseOrders,
-    });
+    const customerId = customer.id;
+    if (customerId || purchaseOrderNo) {
+      const purchaseOrders = await prisma.purchaseOrder.findMany({
+        where: {
+          purchaseOrderNo: purchaseOrderNo,
+          customerId: customerId,
+        },
+        include: {
+          orders: true,
+        },
+      });
+      res.json({
+        success: true,
+        data: purchaseOrders,
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
-  // }
 }
 
 module.exports = {

@@ -8,18 +8,18 @@ generator client {
 }
 
 model User {
-    id            Int             @id @default(autoincrement())
-    email         String          @unique
-    firstName     String?
-    lastName      String?
-    address       String?
-    password      String?
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    PurchaseOrder PurchaseOrder[]
-    SalesOrder    SalesOrder[]
-    UserRoles     UserRoles[]
-    UserTokens    UserTokens[]
+    id                 Int                  @id @default(autoincrement())
+    email              String               @unique
+    firstName          String?
+    lastName           String?
+    address            String?
+    password           String?
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @updatedAt
+    PurchaseOrder      PurchaseOrder[]
+    SalesOrder         SalesOrder[]
+    UserTokens         UserTokens[]
+    userRolePermission userRolePermission[]
 }
 
 model Product {
@@ -109,24 +109,6 @@ model Customer {
     updatedAt  DateTime     @updatedAt
 }
 
-model Roles {
-    id        Int         @id @default(autoincrement())
-    name      String      @unique
-    UserRoles UserRoles[]
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
-}
-
-model UserRoles {
-    id        Int      @id @default(autoincrement())
-    user      User     @relation(fields: [userId], references: [id])
-    userId    Int
-    role      Roles    @relation(fields: [roleId], references: [id])
-    roleId    Int
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 model UserTokens {
     id        Int      @id @default(autoincrement())
     user      User     @relation(fields: [userId], references: [id])
@@ -135,4 +117,36 @@ model UserTokens {
     token     String   @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+model Roles {
+    id             Int                  @id @default(autoincrement())
+    name           String               @unique
+    createdAt      DateTime             @default(now())
+    updatedAt      DateTime             @updatedAt
+    rolePermission rolesPermission[]
+    user           userRolePermission[]
+}
+
+model Permission {
+    id             Int               @id @default(autoincrement())
+    name           String
+    slug           String            @unique
+    rolePermission rolesPermission[]
+}
+
+model rolesPermission {
+    id           Int        @id @default(autoincrement())
+    roleid       Int
+    permissionid Int
+    role         Roles      @relation(fields: [roleid], references: [id])
+    permission   Permission @relation(fields: [permissionid], references: [id])
+}
+
+model userRolePermission {
+    id     Int   @id @default(autoincrement())
+    userid Int
+    roleid Int
+    user   User  @relation(fields: [userid], references: [id])
+    role   Roles @relation(fields: [roleid], references: [id])
 }

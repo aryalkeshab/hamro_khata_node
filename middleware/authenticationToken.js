@@ -38,6 +38,7 @@ async function authenticateToken(req, res, next) {
     return;
   }
 }
-// Verify the token
+
+// validate the permission given to the user
 
 module.exports = authenticateToken;

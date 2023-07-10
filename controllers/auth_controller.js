@@ -10,6 +10,7 @@ async function createUser(req, res) {
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
+
     //
     const firstNameAndPasswordSame = password.includes(firstName);
 
@@ -36,7 +37,22 @@ async function createUser(req, res) {
         password: hashedPassword2,
       },
     });
-    console.log(user);
+    const userRole = await prisma.userRolePermission.create({
+      data: {
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        role: {
+          connect: {
+            // TODO: Change this to actual role id
+            id: 5,
+          },
+        },
+      },
+    });
+    const role = console.log(user);
     res.json({
       success: true,
       message: "User created successfully",
@@ -76,9 +92,13 @@ async function loginUser(req, res) {
       });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, roleId: 5 },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     const tokenExpiry = setTimeout(async () => {
       await prisma.userTokens.delete({
