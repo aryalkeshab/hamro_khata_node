@@ -1,4 +1,5 @@
 const authenticateToken = require("../middleware/authenticationToken");
+const permissionMiddleware = require("../middleware/permissionMiddleware");
 const {
   createVendor,
   getVendors,
@@ -8,8 +9,23 @@ const {
 const express = require("express");
 const router = express.Router();
 
-router.post("/", createVendor);
-router.get("/", getVendors);
-router.delete("/:id", deleteVendor);
+router.post(
+  "/",
+  permissionMiddleware("create_vendor"),
+  authenticateToken,
+  createVendor
+);
+router.get(
+  "/",
+  permissionMiddleware("get_vendor_list"),
+  authenticateToken,
+  getVendors
+);
+router.delete(
+  "/:id",
+  permissionMiddleware("delete_vendor"),
+  authenticateToken,
+  deleteVendor
+);
 
 module.exports = router;

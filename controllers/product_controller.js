@@ -4,19 +4,36 @@ const prisma = new PrismaClient();
 async function addProduct(req, res) {
   try {
     const { productName, description, purchasePrice, sellingPrice } = req.body;
-    const product = await prisma.product.create({
-      data: {
-        productName,
-        description,
-        purchasePrice,
-        sellingPrice,
-        quantity: 0,
+
+    const productExists = await prisma.product.findUnique({
+      where: {
+        productName: productName,
       },
     });
-    res.json({
-      success: true,
-      message: "Product added successfully",
-    });
+
+    if (productExists) {
+      res.status(400).json({ error: "Product already exists" });
+      return;
+    } else if (purchasePrice > sellingPrice) {
+      res
+        .status(400)
+        .json({ error: "Selling price cannot be less than purchase price" });
+      return;
+    } else {
+      const product = await prisma.product.create({
+        data: {
+          productName,
+          description,
+          purchasePrice,
+          sellingPrice,
+          quantity: 0,
+        },
+      });
+      res.json({
+        success: true,
+        message: "Product added successfully",
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });

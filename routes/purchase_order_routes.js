@@ -1,4 +1,6 @@
 const authenticateToken = require("../middleware/authenticationToken");
+const permissionMiddleware = require("../middleware/permissionMiddleware");
+
 const {
   createPurchaseOrder,
   getPurchaseOrders,
@@ -7,8 +9,18 @@ const {
 const express = require("express");
 const router = express.Router();
 
-router.post("/", createPurchaseOrder);
-router.get("/", getPurchaseOrders);
+router.post(
+  "/",
+  permissionMiddleware("purchase_order_create"),
+  authenticateToken,
+  createPurchaseOrder
+);
+router.get(
+  "/",
+  permissionMiddleware("purchase_order_list"),
+  authenticateToken,
+  getPurchaseOrders
+);
 
 module.exports = router;
 // purchase is working fine

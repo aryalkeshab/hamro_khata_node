@@ -1,4 +1,5 @@
 const authenticateToken = require("../middleware/authenticationToken");
+const permissionMiddleware = require("../middleware/permissionMiddleware");
 const {
   createSalesOrder,
   getSalesOrders,
@@ -7,8 +8,18 @@ const {
 const express = require("express");
 const router = express.Router();
 
-router.post("/", createSalesOrder);
-router.get("/", getSalesOrders);
+router.post(
+  "/",
+  permissionMiddleware("sales_order_create"),
+  authenticateToken,
+  createSalesOrder
+);
+router.get(
+  "/",
+  permissionMiddleware("sales_order_list"),
+  authenticateToken,
+  getSalesOrders
+);
 
 module.exports = router;
 // sales is working fine

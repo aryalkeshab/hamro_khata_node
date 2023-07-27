@@ -1,4 +1,5 @@
 const authenticateToken = require("../middleware/authenticationToken");
+const permissionMiddleware = require("../middleware/permissionMiddleware");
 
 const {
   addProduct,
@@ -9,9 +10,29 @@ const {
 
 const express = require("express");
 const router = express.Router();
-router.post("/", addProduct);
-router.get("/", getProducts);
-router.put("/:id", authenticateToken, updateProduct);
-router.delete("/:id", deleteProduct);
+router.post(
+  "/",
+  permissionMiddleware("add_product"),
+  authenticateToken,
+  addProduct
+);
+router.get(
+  "/",
+  permissionMiddleware("get_product"),
+  authenticateToken,
+  getProducts
+);
+router.put(
+  "/:id",
+  permissionMiddleware("update_product"),
+  authenticateToken,
+  updateProduct
+);
+router.delete(
+  "/:id",
+  permissionMiddleware("delete_product"),
+  authenticateToken,
+  deleteProduct
+);
 
 module.exports = router;

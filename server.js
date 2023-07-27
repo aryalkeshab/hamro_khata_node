@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const ErrorMiddleware = require("./middleware/errorMiddleware");
+const path = require("path");
 
 const usersRoutes = require("./routes/auth_routes");
 const customerRoutes = require("./routes/customer_routes");
@@ -15,12 +16,11 @@ const YAML = require("yamljs");
 
 app.use(express.json());
 const swaggerDocument = YAML.load("./swagger_docs/swagger.yaml");
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/home", (req, res) => {
-  res.send(
-    "Hello World from Keshab Aryal, building a REST API based on Inventory Management System"
-  );
-  res.end();
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "front_end", "index.html"));
+  // res.end();
 });
 
 app.use(ErrorMiddleware);
@@ -36,7 +36,7 @@ app.use("/api/roles", rolesRoutes);
 app.use("/api/permission", permissionRoutes);
 
 // app.listen(2122, "192.168.1.72", () => {
-app.listen(2122, () => {
+app.listen(2122, "192.168.1.70", () => {
   console.log("Server running on http://localhost:2122");
 });
 

@@ -12,7 +12,7 @@ async function authenticateToken(req, res, next) {
     return;
   }
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    // const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const tokenExists = await prisma.userTokens.findUnique({
       where: { token: token },
     });
@@ -20,7 +20,7 @@ async function authenticateToken(req, res, next) {
       res.status(401).json({ error: "Unauthorized Request" });
       return;
     }
-    req.userId = decoded.userId;
+    // req.userId = decoded.userId;
     next();
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
