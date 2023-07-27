@@ -61,7 +61,7 @@ async function createUser(req, res) {
     console.error(error);
     res.status(500).json({
       succcess: false,
-      message: "Something went wrong",
+      message: "Something went wrong" + error,
     });
   }
 }
