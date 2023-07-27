@@ -36,7 +36,7 @@ app.use("/api/roles", rolesRoutes);
 app.use("/api/permission", permissionRoutes);
 
 // app.listen(2122, "192.168.1.72", () => {
-app.listen(2122, "192.168.1.70", () => {
+app.listen(2122, "192.168.100.36", () => {
   console.log("Server running on http://localhost:2122");
 });
 
