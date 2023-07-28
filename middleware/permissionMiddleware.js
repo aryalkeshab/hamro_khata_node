@@ -12,7 +12,7 @@ function permissionMiddleware(permissionSlug) {
       },
     });
     if (!permissiondata) {
-      res.status(403).json({ error: "Permission not found!" });
+      res.status(403).json({ status: false, message: "Permission not found!" });
       return;
     }
     const rolePermission = await prisma.rolesPermission.findFirst({
@@ -24,7 +24,10 @@ function permissionMiddleware(permissionSlug) {
     if (!rolePermission) {
       res
         .status(403)
-        .json({ error: "You don't have permission to view this page!" });
+        .json({
+          status: false,
+          message: "You don't have permission to view this page!",
+        });
       return;
     }
     console.log("permission:", permissionSlug);

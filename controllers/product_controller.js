@@ -12,12 +12,17 @@ async function addProduct(req, res) {
     });
 
     if (productExists) {
-      res.status(400).json({ error: "Product already exists" });
+      res
+        .status(400)
+        .json({ status: false, message: "Product already exists" });
       return;
     } else if (purchasePrice > sellingPrice) {
       res
         .status(400)
-        .json({ error: "Selling price cannot be less than purchase price" });
+        .json({
+          status: false,
+          message: "Selling price cannot be less than purchase price",
+        });
       return;
     } else {
       const product = await prisma.product.create({
@@ -36,7 +41,7 @@ async function addProduct(req, res) {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 async function getProducts(req, res) {
@@ -60,7 +65,7 @@ async function getProducts(req, res) {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 
@@ -86,7 +91,7 @@ async function updateProduct(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 async function deleteProduct(req, res) {
@@ -103,7 +108,7 @@ async function deleteProduct(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 

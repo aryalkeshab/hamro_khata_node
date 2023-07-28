@@ -38,7 +38,9 @@ async function createSalesOrder(req, res) {
       (order) => order.quantity > productsMap[order.productId].quantity
     );
     if (invalidOrders.length > 0) {
-      res.status(400).json({ error: "Quantity not available" });
+      res
+        .status(400)
+        .json({ status: false, message: "Quantity not available" });
       return;
     }
 
@@ -98,7 +100,7 @@ async function createSalesOrder(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 async function getSalesOrders(req, res) {
@@ -114,7 +116,7 @@ async function getSalesOrders(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 module.exports = {

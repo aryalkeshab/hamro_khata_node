@@ -17,7 +17,7 @@ async function createCustomer(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 
@@ -42,7 +42,7 @@ async function getCustomers(req, res) {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 async function deleteCustomers(req, res) {
@@ -59,7 +59,7 @@ async function deleteCustomers(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 module.exports = { createCustomer, getCustomers, deleteCustomers };

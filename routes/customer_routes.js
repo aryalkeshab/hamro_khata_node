@@ -17,11 +17,17 @@ router.get(
   getCustomers
 );
 
-router.delete("/:id", authenticateToken, deleteCustomers);
+router.delete(
+  "/:id",
+  permissionMiddleware("delete_customer"),
+  authenticateToken,
+  deleteCustomers
+);
 router.post(
   "/",
-  authenticateToken,
   permissionMiddleware("create_customer_list"),
+
+  authenticateToken,
   (req, res) => {
     createCustomer(req, res);
   }

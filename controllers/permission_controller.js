@@ -31,7 +31,7 @@ async function addPermission(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 // addPermission({
@@ -50,7 +50,7 @@ async function getPermissions(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 module.exports = {

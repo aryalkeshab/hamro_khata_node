@@ -8,7 +8,7 @@ async function authenticateToken(req, res, next) {
   // console.log("Token:", token);
 
   if (!token) {
-    res.status(401).json({ error: "No token provided" });
+    res.status(401).json({ status: false, message: "No token provided" });
     return;
   }
   try {
@@ -17,7 +17,7 @@ async function authenticateToken(req, res, next) {
       where: { token: token },
     });
     if (!tokenExists) {
-      res.status(401).json({ error: "Unauthorized Request" });
+      res.status(401).json({ status: false, message: "Unauthorized Request" });
       return;
     }
     // req.userId = decoded.userId;
@@ -25,15 +25,16 @@ async function authenticateToken(req, res, next) {
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
       // Invalid token
-      res.status(401).json({ error: "Invalid token" });
+      res.status(401).json({ status: false, message: "Invalid token" });
     } else if (error.name === "TokenExpiredError") {
       // Token expired
       res.status(401).json({
-        error: "Token expired! Please login again to continue.",
+        status: false,
+        message: "Token expired! Please login again to continue.",
       });
     } else {
       // Other errors
-      res.status(500).json({ error: "Error verifying token" });
+      res.status(500).json({ status: false, message: "Error verifying token" });
     }
     return;
   }

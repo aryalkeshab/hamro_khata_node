@@ -5,17 +5,23 @@ const jwt = require("jsonwebtoken");
 
 async function createUser(req, res) {
   try {
-    const { firstName, lastName, email, address, password } = req.body;
+    const { firstName, lastName, email, address, password, role } = req.body;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
+    });
+
+    const selectedRole = await prisma.roles.findUnique({
+      where: { name: role },
     });
 
     //
     const firstNameAndPasswordSame = password.includes(firstName);
 
     if (firstNameAndPasswordSame) {
-      res.status(400).json({ error: "Password cannot contain first name" });
+      res
+        .status(400)
+        .json({ status: false, message: "Password cannot contain first name" });
       return;
     }
     if (existingUser) {
@@ -47,12 +53,11 @@ async function createUser(req, res) {
         role: {
           connect: {
             // TODO: Change this to actual role id
-            id: 5,
+            id: selectedRole.id,
           },
         },
       },
     });
-    const role = console.log(user);
     res.json({
       success: true,
       message: "User created successfully",
@@ -74,8 +79,11 @@ async function loginUser(req, res) {
       where: { email },
     });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      res.status(401).json({ error: "Invalid username or password" });
+    if (!user || !bcrypt.compare(password, user.password)) {
+      res.status(401).json({
+        status: false,
+        message: "Invalid username or password",
+      });
       return;
     }
 
@@ -124,7 +132,9 @@ async function loginUser(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error authenticating user" });
+    res
+      .status(500)
+      .json({ status: false, message: "Error authenticating user" });
     // next(error);
   }
 }

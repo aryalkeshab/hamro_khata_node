@@ -9,7 +9,7 @@ async function createPurchaseOrder(req, res) {
       where: { id: vendorId },
     });
     if (!vendor) {
-      res.status(400).json({ error: "Vendor does not exist" });
+      res.status(400).json({ status: false, message: "Vendor does not exist" });
       return;
     }
     // check if the productId exists
@@ -22,7 +22,9 @@ async function createPurchaseOrder(req, res) {
       },
     });
     if (products.length !== productIds.length) {
-      res.status(400).json({ error: "Product does not exist" });
+      res
+        .status(400)
+        .json({ status: false, message: "Product does not exist" });
       return;
     }
     // check if the quantity is available
@@ -34,7 +36,7 @@ async function createPurchaseOrder(req, res) {
     //   (order) => order.quantity > productMap[order.productId].quantity
     // );
     // if (invalidOrders.length > 0) {
-    //   res.status(400).json({ error: "Quantity not available" });
+    //   res.status(400).json({ status: false, message: "Quantity not available" });
     //   return;
     // }
 
@@ -113,7 +115,7 @@ async function createPurchaseOrder(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 
@@ -143,7 +145,7 @@ async function getPurchaseOrders(req, res) {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ status: false, message: "Something went wrong" });
   }
 }
 
